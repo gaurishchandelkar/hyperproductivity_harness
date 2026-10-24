@@ -32,9 +32,9 @@ Success criteria:
 - A `RequestValidationError` handler returning `422 {"detail": "Invalid request"}`
 
 Success criteria:
-- [ ] Integration tests: default, `Ada`, `Zoë`, `Mary Jane`, `Jean-Luc`, `O'Brien` → 200 with the expected message
-- [ ] Integration tests: 51 characters, `<script>`, `R2D2`, `100%`, `" Ada"`, empty → 422 `{"detail": "Invalid request"}` without echoing the input
-- [ ] `npm run check -- lint unit integration architecture` passes
+- [x] Integration tests: default, `Ada`, `Zoë`, `Mary Jane`, `Jean-Luc`, `O'Brien` → 200 with the expected message
+- [x] Integration tests: 51 characters, `<script>`, `R2D2`, `100%`, `" Ada"`, empty → 422 `{"detail": "Invalid request"}` without echoing the input
+- [x] `npm run check -- lint unit integration architecture` passes
 
 ## Phase 3: Frontend form
 
