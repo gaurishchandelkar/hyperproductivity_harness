@@ -1,0 +1,27 @@
+{
+  "name": "hyper-harness",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n backend,frontend -c blue,green npm:dev:backend npm:dev:frontend",
+    "dev:backend": "uv run -m uvicorn backend.main:app --reload --reload-dir backend",
+    "dev:frontend": "vite frontend",
+    "build": "tsc && vite build frontend"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  }
+}

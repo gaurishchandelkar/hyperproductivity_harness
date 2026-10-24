@@ -30,8 +30,8 @@ described in [AI Agents in the Fast Lane: Engineering for Hyper Productivity](ht
 - `npm run dev` starts both; short README
 
 Success criteria:
-- [ ] `uv sync && npm install && npm run dev` works on a fresh clone
-- [ ] `/api/hello` returns JSON and the page renders the message
+- [x] `uv sync && npm install && npm run dev` works on a fresh clone
+- [x] `/api/hello` returns JSON and the page renders the message
 
 ## Iteration 2: Rules layer
 
