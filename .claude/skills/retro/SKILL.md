@@ -28,6 +28,7 @@ Look through the plan, the commits (`git log main..HEAD` or the merged range), r
 | Repeated review feedback | Updated `docs/CODING_GUIDELINES.md` |
 | Repetitive engineering task | New skill in `.claude/skills/` |
 | Successful pattern | Reusable skill or template |
+| Harness defect (a check, hook or metric gave false or misleading evidence) | Fix it, with a test proving the fix |
 
 Choose the strongest improvement you can: **enforced beats documented**. A lint rule beats a guideline, and a test beats a note.
 

@@ -27,8 +27,25 @@ export function summarise({ specAdded, planApproved, planDone, subjects, specEdi
     "fix-ups": fixes,
     "first-pass rate":
       phases > 0 ? `${String(Math.round((100 * Math.max(phases - fixes, 0)) / phases))}%` : "-",
-    "spec rework": planApproved ? specEdits.filter((date) => date > planApproved).length : 0,
+    "spec rework": planApproved
+      ? specEdits.filter((edit) => edit.date > planApproved && !edit.checkboxOnly).length
+      : 0,
   };
+}
+
+// Ticking acceptance criteria at "done" is progress, not rework.
+export function isCheckboxOnly(diff) {
+  const changed = diff.split("\n").filter((line) => /^[+-](?![+-]{2})/.test(line));
+  const normalise = (line) => line.slice(1).replace(/^(\s*- )\[[ xX]\]/, "$1[ ]");
+  const removed = changed
+    .filter((line) => line.startsWith("-"))
+    .map(normalise)
+    .sort();
+  const added = changed
+    .filter((line) => line.startsWith("+"))
+    .map(normalise)
+    .sort();
+  return removed.length === added.length && removed.every((line, i) => line === added[i]);
 }
 
 export function countSignals(log) {
@@ -45,8 +62,20 @@ function featureData(name) {
     planApproved: earliest(commitDates("-G", "Status: \\*\\*Approved\\*\\*", "--", plan)),
     planDone: earliest(commitDates("-G", "Status: \\*\\*Done\\*\\*", "--", plan)),
     subjects: git("log", "--format=%s").split("\n"),
-    specEdits: commitDates("--", spec),
+    specEdits: specEdits(spec),
   };
+}
+
+function specEdits(spec) {
+  const out = git("log", "--format=%H %aI", "--", spec);
+  if (!out) return [];
+  return out.split("\n").map((line) => {
+    const [sha, date] = line.split(" ");
+    return {
+      date: new Date(date),
+      checkboxOnly: isCheckboxOnly(git("show", "--format=", "--unified=0", sha, "--", spec)),
+    };
+  });
 }
 
 function countMatches(dir, pattern, filter) {

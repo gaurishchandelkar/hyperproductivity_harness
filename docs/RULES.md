@@ -51,3 +51,4 @@ When something escapes or goes wrong, record it in `docs/HARNESS_LOG.md` and imp
 | Repeated review feedback | Updated coding guidelines |
 | Repetitive engineering task | New agent skill |
 | Successful pattern | Reusable skill or template |
+| Harness defect (a check, hook or metric gave false or misleading evidence) | Fix it, with a test proving the fix |

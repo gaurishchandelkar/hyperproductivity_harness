@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { countSignals, summarise } from "./metrics.mjs";
+import { countSignals, isCheckboxOnly, summarise } from "./metrics.mjs";
 
 const day = (n, hour = 0) => new Date(Date.UTC(2026, 0, n, hour));
 
@@ -12,7 +12,11 @@ test("summarise computes duration, first-pass rate and rework", () => {
       planApproved: day(2),
       planDone: day(3),
       subjects: ["greet: phase 1 - a", "greet: phase 2 - b", "greet: fix lint", "other: phase 1"],
-      specEdits: [day(1), day(2, 12)],
+      specEdits: [
+        { date: day(1), checkboxOnly: false },
+        { date: day(2, 12), checkboxOnly: false },
+        { date: day(3), checkboxOnly: true },
+      ],
     },
     "greet",
   );
@@ -35,6 +39,19 @@ test("summarise reports unfinished features as in progress", () => {
 
   assert.equal(result["spec→done (h)"], "in progress");
   assert.equal(result["first-pass rate"], "-");
+});
+
+test("isCheckboxOnly accepts diffs that only tick boxes", () => {
+  const diff = ["--- a/spec.md", "+++ b/spec.md", "-- [ ] Given A", "+- [x] Given A"].join("\n");
+
+  assert.equal(isCheckboxOnly(diff), true);
+});
+
+test("isCheckboxOnly rejects diffs that change wording", () => {
+  const diff = ["-- [ ] Given A", "+- [x] Given B"].join("\n");
+
+  assert.equal(isCheckboxOnly(diff), false);
+  assert.equal(isCheckboxOnly("+- [ ] New criterion"), false);
 });
 
 test("countSignals counts dated entries and escaped defects", () => {
