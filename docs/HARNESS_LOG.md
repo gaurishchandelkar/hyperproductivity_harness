@@ -13,6 +13,12 @@ Entry format:
 - Enforced: yes (<check that now catches it>) | documented only (<why it can't be enforced>)
 ```
 
+## 2026-10-25: Mis-cased working directory broke vitest on Windows
+- Signal: harness defect
+- What happened: `npm run check` in a fresh clone failed with "Invalid Chai property: toBeInTheDocument". The shell path was `C--Data…` while the folder on disk is `c--Data…`. Windows ignores the difference, but Vite loaded `vitest` twice, so jest-dom extended the wrong `expect`.
+- Improvement: safeguard. `scripts/check.mjs` compares the working directory with its real path and stops with an explanation.
+- Enforced: yes (`npm run check` exits with 2 and names both paths)
+
 ## 2026-10-25: Metrics counted ticked checkboxes as spec rework
 - Signal: harness defect
 - What happened: After the personalised-greeting plan was approved, the only change to its spec was ticking the acceptance criteria at done. `npm run metrics` still reported spec rework 1.
