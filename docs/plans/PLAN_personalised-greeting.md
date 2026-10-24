@@ -42,8 +42,8 @@ Success criteria:
 - `App` shows the default greeting on load, plus a form ("Your name" label, `maxLength=50`, **Greet** button) that trims input and shows the greeting or the validation message
 
 Success criteria:
-- [ ] Vitest: the query string is built correctly; 422 → `InvalidNameError`; the form greets; an invalid name shows the validation alert
-- [ ] Frontend coverage stays at or above 80%, and `npm run check -- build lint unit` passes
+- [x] Vitest: the query string is built correctly; 422 → `InvalidNameError`; the form greets; an invalid name shows the validation alert
+- [x] Frontend coverage stays at or above 80%, and `npm run check -- build lint unit` passes
 
 ## Phase 4: End-to-end and docs
 
