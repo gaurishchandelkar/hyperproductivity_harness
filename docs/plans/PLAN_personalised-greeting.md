@@ -1,7 +1,8 @@
 # Plan: Personalised greeting
 
 Spec: `docs/specs/personalised-greeting.md`
-Status: **Awaiting approval** <!-- Awaiting approval | Approved | In progress | Done -->
+Status: **Approved** <!-- Awaiting approval | Approved | In progress | Done -->
+Approved: 2026-10-25 by the repo owner, as the Iteration 6 reference example in `docs/PLAN.md`.
 
 ## Approach
 
