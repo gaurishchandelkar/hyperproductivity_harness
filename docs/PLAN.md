@@ -41,8 +41,8 @@ Success criteria:
 - `docs/templates/SPEC_TEMPLATE.md` with a worked example
 
 Success criteria:
-- [ ] All four rule files exist and are referenced from `AGENTS.md` in a required reading order
-- [ ] Every enforceable rule names the safeguard or check that enforces it
+- [x] All four rule files exist and are referenced from `AGENTS.md` in a required reading order
+- [x] Every enforceable rule names the safeguard or check that enforces it
 
 ## Iteration 3: Safeguards
 
