@@ -78,7 +78,7 @@ Success criteria:
 
 Success criteria:
 - [x] Each skill and subagent is defined with clear stop points for human approval
-- [ ] `/plan` writes a plan file and stops without touching code
+- [x] `/plan` writes a plan file and stops without touching code
 
 ## Iteration 6: Flywheel, metrics and end-to-end proof
 
@@ -88,6 +88,6 @@ Success criteria:
 - Template-ise: README walkthrough, `scripts/init-project.mjs`
 
 Success criteria:
-- [ ] The example feature ships with spec, plan and passing checks
-- [ ] `/retro` is documented with a real harness-log entry and `metrics.mjs` prints a report
-- [ ] `npm run check` passes after `init-project.mjs`
+- [x] The example feature ships with spec, plan and passing checks
+- [x] `/retro` is documented with a real harness-log entry and `metrics.mjs` prints a report
+- [x] `npm run check` passes after `init-project.mjs`

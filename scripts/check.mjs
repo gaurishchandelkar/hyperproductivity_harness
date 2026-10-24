@@ -2,6 +2,18 @@
 // Usage: npm run check            all stages
 //        npm run check -- lint unit   selected stages
 import { spawnSync } from "node:child_process";
+import { realpathSync } from "node:fs";
+
+// Windows paths are case-insensitive but Vite's module graph is not: a mis-cased cwd loads
+// vitest twice and fails with "Invalid Chai property". Fail early with the actual cause.
+const realCwd = realpathSync.native(process.cwd());
+if (realCwd !== process.cwd()) {
+  console.error(`Working directory casing differs from the real path:
+  shell: ${process.cwd()}
+  real:  ${realCwd}
+cd to the real path and run again.`);
+  process.exit(2);
+}
 
 const STAGES = {
   build: "npm run build",

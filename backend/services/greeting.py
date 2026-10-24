@@ -1,5 +1,5 @@
-from backend.domain.greeting import Greeting
+from backend.domain.greeting import Greeting, greeting_for
 
 
-def get_greeting() -> Greeting:
-    return Greeting(message="Hello, World!")
+def get_greeting(name: str | None = None) -> Greeting:
+    return greeting_for(name)

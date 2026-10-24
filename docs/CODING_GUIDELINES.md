@@ -42,6 +42,8 @@ The frontend follows the same idea: components render, `api.ts` talks to the bac
 - **Integration:** `backend/tests/integration/` covers the HTTP API through all layers with `TestClient`.
 - **Functional:** `e2e/` runs Playwright against the real frontend and backend.
 - Tests are deterministic, with no real network calls, sleeps or order dependence.
+- Assert through public interfaces: HTTP responses, the OpenAPI schema, the rendered DOM. Never assert on framework internals.
+- Tests start the processes they verify and never reuse an already-running server. Use `127.0.0.1`, not `localhost`, because `localhost` can resolve to `::1`.
 - *Enforced by:* the 80% line and branch coverage gates in `npm run check`.
 
 ## Suppressions

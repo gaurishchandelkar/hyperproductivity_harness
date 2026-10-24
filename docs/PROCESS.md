@@ -81,6 +81,10 @@ The pre-commit hook runs the fast stages for staged files. CI runs every stage o
 
 Bug fixes and tweaks that need no design decision can skip stages 1–2, but they still need a test, a passing `npm run check` and a commit.
 
+## Background processes
+
+Stop every dev server you start. On Windows, `uvicorn --reload` leaves a worker process that outlives its parent, so stop it by port, not by its parent's PID.
+
 ## Commits
 
 - One logical change per commit. Use the imperative mood ("Add greeting name validation").
