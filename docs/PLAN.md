@@ -77,7 +77,7 @@ Success criteria:
 - PR template with spec link, Definition of Done, verification evidence and "human attention needed"
 
 Success criteria:
-- [ ] Each skill and subagent is defined with clear stop points for human approval
+- [x] Each skill and subagent is defined with clear stop points for human approval
 - [ ] `/plan` writes a plan file and stops without touching code
 
 ## Iteration 6: Flywheel, metrics and end-to-end proof

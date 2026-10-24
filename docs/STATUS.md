@@ -15,6 +15,7 @@
   - Playwright E2E covers both the success path and the error path.
 - **CI:** GitHub Actions runs one job per stage. Dependabot and CODEOWNERS are configured, and `scripts/protect-branch.mjs` applies branch protection.
 - **Agent browser:** the Playwright MCP server is configured in `.mcp.json`.
+- **Staged autonomy:** the `/spec`, `/plan`, `/implement` and `/ship` skills, the `code-reviewer` and `security-reviewer` subagents, and a PR template with Definition of Done and human-attention sections.
 
 ## In progress
 
