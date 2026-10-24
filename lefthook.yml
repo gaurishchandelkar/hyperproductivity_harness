@@ -1,0 +1,31 @@
+# Pre-commit safeguards: format staged files, then lint, type-check and scan the side that changed.
+# Never bypass with --no-verify or LEFTHOOK=0 (docs/RULES.md). CI re-runs everything anyway.
+glob_matcher: doublestar
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: python
+      glob: "backend/**/*.py"
+      group:
+        piped: true
+        jobs:
+          - run: uv run ruff format {staged_files}
+            stage_fixed: true
+          - run: uv run ruff check {staged_files}
+          - run: npx pyright
+          - run: uv run lint-imports
+
+    - name: typescript
+      glob: ["frontend/**", "e2e/**", "scripts/**", ".claude/**", "*.config.*", "*.json"]
+      group:
+        piped: true
+        jobs:
+          - run: npx prettier --write -u {staged_files}
+            stage_fixed: true
+          - glob: "**/*.{ts,tsx,js,mjs}"
+            run: npx eslint --no-warn-ignored {staged_files}
+          - run: npx tsc
+
+    - name: secrets
+      run: node scripts/check-secrets.mjs {staged_files}

@@ -54,8 +54,8 @@ Success criteria:
 - Agent safeguards in `.claude/`: permission denies, `PreToolUse` guard hook, `PostToolUse` format hook
 
 Success criteria:
-- [ ] A lint error, type error, hard-coded secret or reversed layer import fails the checks
-- [ ] The guard hook blocks `git push`, `--no-verify`, `.env` access and suppression comments
+- [x] A lint error, type error, hard-coded secret or reversed layer import fails the checks
+- [x] The guard hook blocks `git push`, `--no-verify`, `.env` access and suppression comments
 
 ## Iteration 4: Verification pipeline
 

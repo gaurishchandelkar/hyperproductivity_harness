@@ -3,17 +3,19 @@ import { useEffect, useState } from "react";
 import { fetchGreeting } from "./api";
 
 type State =
-  | { status: "loading" }
-  | { status: "ready"; message: string }
-  | { status: "error"; error: string };
+  { status: "loading" } | { status: "ready"; message: string } | { status: "error"; error: string };
 
 export function App() {
   const [state, setState] = useState<State>({ status: "loading" });
 
   useEffect(() => {
     fetchGreeting()
-      .then((greeting) => setState({ status: "ready", message: greeting.message }))
-      .catch((error: unknown) => setState({ status: "error", error: String(error) }));
+      .then((greeting) => {
+        setState({ status: "ready", message: greeting.message });
+      })
+      .catch((error: unknown) => {
+        setState({ status: "error", error: String(error) });
+      });
   }, []);
 
   return (
