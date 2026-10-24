@@ -51,8 +51,8 @@ Success criteria:
 - Update `docs/SPEC.md` and `docs/STATUS.md`
 
 Success criteria:
-- [ ] `npm run check -- functional` passes, with both new E2E tests
-- [ ] `docs/SPEC.md` documents the `name` parameter and the 422 behavior
+- [x] `npm run check -- functional` passes, with both new E2E tests
+- [x] `docs/SPEC.md` documents the `name` parameter and the 422 behavior
 
 ## Final verification
 
