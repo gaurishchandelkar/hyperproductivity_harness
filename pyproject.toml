@@ -11,8 +11,11 @@ dependencies = [
 [dependency-groups]
 dev = [
     "detect-secrets>=1.5.0",
+    "httpx2>=2.16.0",
     "import-linter>=2.15",
     "pip-audit>=2.10.1",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
     "ruff>=0.17.2",
 ]
 
@@ -50,3 +53,17 @@ name = "Domain is pure: no web framework or HTTP"
 type = "forbidden"
 source_modules = ["backend.domain", "backend.services"]
 forbidden_modules = ["fastapi", "starlette", "uvicorn"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+source = ["backend"]
+omit = ["backend/tests/*"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+skip_covered = true

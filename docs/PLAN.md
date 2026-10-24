@@ -67,8 +67,8 @@ Success criteria:
 - GitHub Actions workflow mirroring the stages, Dependabot, CODEOWNERS, branch protection script
 
 Success criteria:
-- [ ] `npm run check` passes locally and a broken test fails it at the right stage
-- [ ] CI workflow defines one job per stage
+- [x] `npm run check` passes locally and a broken test fails it at the right stage
+- [x] CI workflow defines one job per stage
 
 ## Iteration 5: Staged autonomy workflow
 
