@@ -1,7 +1,7 @@
 # Plan: Personalised greeting
 
 Spec: `docs/specs/personalised-greeting.md`
-Status: **In progress** <!-- Awaiting approval | Approved | In progress | Done -->
+Status: **Done** <!-- Awaiting approval | Approved | In progress | Done -->
 Approved: 2026-10-25 by the repo owner, as the Iteration 6 reference example in `docs/PLAN.md`.
 
 ## Approach
@@ -56,5 +56,5 @@ Success criteria:
 
 ## Final verification
 
-- [ ] `npm run check` passes
-- [ ] Every acceptance criterion in the spec is covered by a test
+- [x] `npm run check` passes
+- [x] Every acceptance criterion in the spec is covered by a test
