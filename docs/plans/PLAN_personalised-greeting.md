@@ -1,7 +1,7 @@
 # Plan: Personalised greeting
 
 Spec: `docs/specs/personalised-greeting.md`
-Status: **Approved** <!-- Awaiting approval | Approved | In progress | Done -->
+Status: **In progress** <!-- Awaiting approval | Approved | In progress | Done -->
 Approved: 2026-10-25 by the repo owner, as the Iteration 6 reference example in `docs/PLAN.md`.
 
 ## Approach
@@ -23,8 +23,8 @@ The trade-off: the generic 422 body hides which rule failed. That's simpler and 
 - `get_greeting(name: str | None = None)` in the service
 
 Success criteria:
-- [ ] Unit tests: no name → "Hello, World!"; "Ada" → "Hello, Ada!"
-- [ ] `npm run check -- lint unit architecture` passes
+- [x] Unit tests: no name → "Hello, World!"; "Ada" → "Hello, Ada!"
+- [x] `npm run check -- lint unit architecture` passes
 
 ## Phase 2: API validation
 
