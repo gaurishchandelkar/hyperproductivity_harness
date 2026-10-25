@@ -69,7 +69,7 @@ build → lint → unit → integration → functional → security → architec
 |---|---|
 | build | `tsc`, `vite build` |
 | lint | ruff format/check, pyright, Prettier, ESLint |
-| unit | pytest `backend/tests/unit`, vitest (80% coverage gates), `node --test .claude/hooks` (the guard's own tests) |
+| unit | pytest `backend/tests/unit`, vitest (80% coverage gates), `node --test` on `.claude/hooks/*.test.mjs` and `scripts/*.test.mjs` (the harness's own tests) |
 | integration | pytest `backend/tests/integration` |
 | functional | Playwright `e2e/` |
 | security | pip-audit, npm audit, detect-secrets |

@@ -13,6 +13,12 @@ Entry format:
 - Enforced: yes (<check that now catches it>) | documented only (<why it can't be enforced>)
 ```
 
+## 2026-10-25: Unit stage passed on Windows but failed on Linux CI
+- Signal: harness defect
+- What happened: The first CI run on GitHub failed the unit job. `node --test .claude/hooks/ scripts/` passed on Windows, but on Linux Node tried to load each directory as a module (`Cannot find module …/.claude/hooks`). The pre-commit hook also ran only the guard tests, never `scripts/metrics.test.mjs`. CI also warned that `checkout@v4`, `setup-node@v4` and `setup-uv@v6` run on deprecated Node 20, and Dependabot opened a TypeScript 7 PR against the documented `~6.0` pin.
+- Improvement: safeguard. `package.json` and `lefthook.yml` pass explicit `*.test.mjs` globs, which Node expands the same way on every OS, and the hook also runs on `scripts/` changes. The actions moved to Node 24 versions (`checkout@v7`, `setup-node@v7`, `upload-artifact@v7`, `setup-uv@v10.2.0`), and `.github/dependabot.yml` ignores TypeScript majors until the pin is lifted.
+- Enforced: yes (CI runs every stage on Linux, so a check that only passes on Windows now fails the PR)
+
 ## 2026-10-25: Mis-cased working directory broke vitest on Windows
 - Signal: harness defect
 - What happened: `npm run check` in a fresh clone failed with "Invalid Chai property: toBeInTheDocument". The shell path was `C--Data…` while the folder on disk is `c--Data…`. Windows ignores the difference, but Vite loaded `vitest` twice, so jest-dom extended the wrong `expect`.

@@ -17,7 +17,7 @@
     "lint": "npm run lint:python && npm run lint:ts",
     "lint:python": "uv run ruff format --check && uv run ruff check && pyright",
     "lint:ts": "prettier --check -u . && eslint .",
-    "test:unit": "uv run pytest backend/tests/unit --cov && vitest run --root frontend --coverage && node --test .claude/hooks/ scripts/",
+    "test:unit": "uv run pytest backend/tests/unit --cov && vitest run --root frontend --coverage && node --test \".claude/hooks/*.test.mjs\" \"scripts/*.test.mjs\"",
     "test:integration": "uv run pytest backend/tests/integration",
     "test:e2e": "playwright test",
     "security": "uv run pip-audit && npm audit --audit-level=high && node scripts/check-secrets.mjs",
