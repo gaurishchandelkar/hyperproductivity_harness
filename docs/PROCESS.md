@@ -3,8 +3,8 @@
 ## Setup
 
 ```bash
-uv sync        # Python deps into .venv
-npm install    # Node deps, git hooks (lefthook) and Playwright Chromium
+uv sync        # Python deps into .venv (first: npm install needs Python Playwright)
+npm install    # Node deps, git hooks (lefthook) and the E2E Chromium
 npm run dev    # backend :8000 + frontend :5173
 npm run check  # full verification pipeline
 ```
@@ -71,7 +71,7 @@ build → lint → unit → integration → functional → security → architec
 | lint | ruff format/check, pyright, Prettier, ESLint |
 | unit | pytest `backend/tests/unit`, vitest (80% coverage gates), `node --test` on `.claude/hooks/*.test.mjs` and `scripts/*.test.mjs` (the harness's own tests) |
 | integration | pytest `backend/tests/integration` |
-| functional | Playwright `e2e/` |
+| functional | pytest + Playwright `e2e/` on a fresh production build: outside (what the user sees) and inside (the exact API calls) |
 | security | pip-audit, npm audit, detect-secrets |
 | architecture | import-linter |
 

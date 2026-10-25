@@ -13,6 +13,7 @@
 - **Verification:** `npm run check` runs build → lint → unit → integration → functional → security → architecture.
   - Coverage gates are at 80%.
   - E2E runs on dedicated ports, so a running dev server is never what gets tested.
+  - E2E is pytest + Playwright against a fresh production build. Each journey has an outside test (what the user sees) and an inside test (the exact API calls, via `e2e/network.py`).
 - **CI:** GitHub Actions runs one job per stage. Dependabot and CODEOWNERS are configured, and `scripts/protect-branch.mjs` applies branch protection.
 - **Staged autonomy:** the `/spec`, `/plan`, `/implement`, `/ship` and `/retro` skills, the `code-reviewer` and `security-reviewer` subagents, and the PR template.
 - **Flywheel and metrics:** `docs/HARNESS_LOG.md`, `docs/METRICS.md` and `npm run metrics`.
@@ -20,7 +21,7 @@
 
 ## In progress
 
-- Python E2E with whitebox network checks (`docs/plans/PLAN_python-e2e-whitebox.md`). Phases 1–3 are done: the functional stage runs the Python suite in `e2e/`, and the TypeScript suite is gone. Docs are next.
+- None. The Python E2E change (`docs/plans/PLAN_python-e2e-whitebox.md`) is done locally; its CI run on the PR is still to be confirmed.
 
 ## Known gaps
 

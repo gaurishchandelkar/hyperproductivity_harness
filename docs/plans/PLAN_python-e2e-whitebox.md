@@ -1,7 +1,7 @@
 # Plan: Python E2E tests with whitebox verification
 
 Spec: `docs/specs/python-e2e-whitebox.md`
-Status: **In progress**
+Status: **Done** (CI on the PR still to confirm: Phase 3, last criterion)
 
 ## Approach
 
@@ -15,8 +15,8 @@ The production build also matters for correctness. `main.tsx` uses `StrictMode`,
 
 ## Human attention needed
 
-- **New dependency (approved):** `pytest-playwright` as a dev dependency, which brings in `playwright`. Version 0.10 provides its own `base_url` fixture, so `pytest-base-url` isn't needed.
-- **Rule exclusion (approved during Phase 1):** ruff's bandit rule S603 flags every subprocess call. The human approved a per-file ignore for `e2e/conftest.py` only, which starts the servers under test with a fixed argv. S603 stays on everywhere else. Python Playwright downloads its own Chromium (about 150 MB), installed by `scripts/prepare.mjs` and in CI with `uv run playwright install`.
+- **New dependency (approved):** `pytest-playwright` as a dev dependency, which brings in `playwright`. Version 0.10 provides its own `base_url` fixture, so `pytest-base-url` isn't needed. Python Playwright downloads its own Chromium (about 150 MB), installed by `scripts/prepare.mjs` and in CI with `uv run playwright install`.
+- **Rule exclusion (approved during Phase 1):** ruff's bandit rule S603 flags every subprocess call. The human approved a per-file ignore for `e2e/conftest.py` only, which starts the servers under test with a fixed argv. S603 stays on everywhere else.
 - **Install order:** `scripts/prepare.mjs` will call `uv run playwright install chromium`, so `npm install` needs `uv sync` to have run first. That's already the documented order (`uv sync && npm install`), but a plain `npm install` on a fresh clone without it would fail at `prepare`.
 - **Protected files, for your review in the PR:**
   - `.github/workflows/ci.yml`: the functional job installs Chromium with `uv run playwright install --with-deps chromium`. Job and check names are unchanged.
@@ -88,14 +88,14 @@ Success criteria:
 - Tick the spec's acceptance criteria.
 
 Success criteria:
-- [ ] `grep -rn "hello.spec.ts\|@playwright/test\|playwright.config" docs README.md AGENTS.md CLAUDE.md` finds only historical `HARNESS_LOG.md` and `PLAN.md` entries
-- [ ] `npm run check` passes
+- [x] `grep -rn "hello.spec.ts\|@playwright/test\|playwright.config" docs README.md AGENTS.md CLAUDE.md` finds only historical `HARNESS_LOG.md` and `PLAN.md` entries
+- [x] `npm run check` passes
 
 ## Final verification
 
-- [ ] `npm run check` passes
-- [ ] Every acceptance criterion in the spec is covered by a test:
+- [x] `npm run check` passes
+- [x] Every acceptance criterion in the spec is covered by a test:
   - outside journeys 1–4 map to `test_journeys.py`
   - inside checks 1–4 map to `test_network_contract.py`
   - inside check 5 maps to the exact-call assertions plus the foreign-origin teardown
-- [ ] Every failure condition in the spec has a recorded check from Phase 1 or 2
+- [x] Every failure condition in the spec has a recorded check from Phase 1 or 2
