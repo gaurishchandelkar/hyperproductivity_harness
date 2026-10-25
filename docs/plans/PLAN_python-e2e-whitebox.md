@@ -58,10 +58,10 @@ Success criteria:
   Each waits for network idle, then asserts the exact list of `/api/` calls.
 
 Success criteria:
-- [ ] `uv run pytest e2e` reports 8 passed
-- [ ] **Mutation proof:** a temporary change makes `frontend/src/api.ts` fetch the greeting twice. Then `test_load_requests_default_greeting_once` fails, listing both calls, while `test_shows_default_greeting` still passes. The output is recorded in the PR and the change is reverted
-- [ ] **Foreign-origin proof:** a temporary scratch test requests `http://localhost:9/`. Teardown fails it, naming that origin. The scratch test isn't committed
-- [ ] `npm run check` passes
+- [x] `uv run pytest e2e` reports 8 passed
+- [x] **Mutation proof:** a temporary change makes `frontend/src/api.ts` fetch the greeting twice. Then `test_load_requests_default_greeting_once` fails, listing both calls, while `test_shows_default_greeting` still passes. The output is recorded in the PR and the change is reverted
+- [x] **Foreign-origin proof:** a temporary scratch test requests `http://localhost:9/`. Teardown fails it, naming that origin. The scratch test isn't committed
+- [x] `npm run check` passes
 
 ## Phase 3: Cut over the functional stage
 

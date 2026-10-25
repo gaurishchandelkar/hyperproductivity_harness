@@ -14,6 +14,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+from playwright.sync_api import Page
+
+from e2e.network import ApiTraffic
 
 ROOT = Path(__file__).resolve().parent.parent
 VITE = ROOT / "node_modules" / "vite" / "bin" / "vite.js"
@@ -160,3 +163,16 @@ def servers_running(servers: list[Server]) -> None:
                 f"{server.process.returncode}):\n{server.output()}",
                 pytrace=False,
             )
+
+
+@pytest.fixture(autouse=True)
+def traffic(page: Page, base_url: str) -> Iterator[ApiTraffic]:
+    recorder = ApiTraffic(page)
+    yield recorder
+    foreign = recorder.foreign_origins(base_url)
+    if foreign:
+        pytest.fail(
+            f"The page made requests outside the test servers: {', '.join(foreign)}\n"
+            f"{recorder.describe()}",
+            pytrace=False,
+        )
