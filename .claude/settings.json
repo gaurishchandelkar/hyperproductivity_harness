@@ -25,6 +25,13 @@
       "Bash(git reset --hard *)",
       "Bash(git clean *)",
       "Bash(rm -rf *)",
+      "PowerShell(git push)",
+      "PowerShell(git push *)",
+      "PowerShell(git * --no-verify *)",
+      "PowerShell(git reset --hard *)",
+      "PowerShell(git clean *)",
+      "PowerShell(Remove-Item -Recurse *)",
+      "PowerShell(Remove-Item * -Recurse*)",
       "Read(**/.env)",
       "Read(**/.env.local)",
       "Read(**/.env.*.local)",
@@ -35,7 +42,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash|Read|Edit|Write|MultiEdit",
+        "matcher": "Bash|PowerShell|Read|Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
