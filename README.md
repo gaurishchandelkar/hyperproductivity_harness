@@ -11,7 +11,7 @@ A ready-to-use template for **agentic hyper productivity**: a minimal React + Fa
 |---|---|---|
 | **Rules guide** | Operating rules, coding and security guidelines, the staged process | `AGENTS.md`, `CLAUDE.md`, `docs/RULES.md`, `docs/CODING_GUIDELINES.md`, `docs/PROCESS.md`, `docs/SECURITY_GUIDELINES.md` |
 | **Safeguards protect** | ruff (with bandit rules), pyright strict, ESLint strict, Prettier, import-linter layer contracts, pip-audit, npm audit, detect-secrets, lefthook pre-commit, agent permission rules and guard hook, branch protection | `pyproject.toml`, `eslint.config.js`, `lefthook.yml`, `.claude/`, `scripts/protect-branch.mjs` |
-| **Verification gives evidence** | Unit, integration and Playwright E2E tests with 80% coverage gates, in one pipeline locally and in CI | `npm run check`, `.github/workflows/ci.yml` |
+| **Verification gives evidence** | Unit and integration tests with 80% coverage gates, and Python Playwright E2E tests that check both the UI and the exact API calls behind it, in one pipeline locally and in CI | `npm run check`, `.github/workflows/ci.yml` |
 | **Better specs** | Agent-ready spec and plan templates | `docs/templates/` |
 | **Staged autonomy** | `/spec` → `/plan` → *human approves* → `/implement` → `/ship` → *human merges* → `/retro` | `.claude/skills/`, `.claude/agents/` |
 | **Flywheel** | Each failure becomes a test, rule, safeguard or skill | `docs/HARNESS_LOG.md`, `/retro` |
@@ -25,7 +25,7 @@ Prerequisites: [uv](https://docs.astral.sh/uv/), Node.js 22+, git. Optional: the
 # 1. Create your repo from this template (GitHub "Use this template"), clone it, then:
 node scripts/init-project.mjs --name my-app --owner your-github-handle
 
-# 2. Install everything (Python deps, Node deps, git hooks, Playwright Chromium)
+# 2. Install everything (Python deps, Node deps, git hooks, the E2E Chromium), uv sync first
 uv sync
 npm install
 
@@ -56,7 +56,7 @@ For a worked example of the full loop, see `docs/specs/personalised-greeting.md`
 |---|---|
 | `backend/` | FastAPI, with layers `api/` → `services/` → `domain/` and tests under `tests/unit` and `tests/integration` |
 | `frontend/` | React + Vite + TypeScript (strict), with vitest tests next to the code |
-| `e2e/` | Playwright functional tests |
+| `e2e/` | pytest + Playwright functional tests: outside journeys and inside network-contract checks |
 | `docs/` | Rules, product spec, specs and plans, templates, harness log, metrics |
 | `.claude/` | Claude Code permissions, guard and format hooks, skills, reviewer subagents |
 | `.github/` | CI (one job per stage), PR template, CODEOWNERS, Dependabot |

@@ -33,7 +33,7 @@ Your goal is to **maximize useful autonomy within well-defined, verifiable bound
 |---|---|
 | `backend/` | FastAPI app, layered `api/` → `services/` → `domain/` |
 | `frontend/` | React + Vite + TypeScript (strict) |
-| `e2e/` | Playwright functional tests |
+| `e2e/` | pytest + Playwright functional tests: outside journeys and inside network-contract checks |
 | `docs/` | Rules, product docs, `specs/`, `plans/`, `templates/`, `HARNESS_LOG.md`, `METRICS.md` |
 | `.claude/` | Claude Code settings, hooks, skills and subagents |
 | `scripts/` | Cross-platform `.mjs` helpers |

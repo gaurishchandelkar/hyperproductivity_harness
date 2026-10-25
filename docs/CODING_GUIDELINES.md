@@ -40,7 +40,11 @@ The frontend follows the same idea: components render, `api.ts` talks to the bac
 - Every behavior change comes with a test. Test behavior, not implementation.
 - **Unit:** `backend/tests/unit/` (pytest) and `frontend/src/**/*.test.tsx` (vitest + Testing Library).
 - **Integration:** `backend/tests/integration/` covers the HTTP API through all layers with `TestClient`.
-- **Functional:** `e2e/` runs Playwright against the real frontend and backend.
+- **Functional:** `e2e/` (pytest + Playwright) drives a fresh production build of the frontend against the real backend.
+  - Every user journey gets an **outside** test in `test_journeys.py`, which asserts only what the user sees.
+  - Every journey also gets an **inside** test in `test_network_contract.py`, which asserts the exact `/api/` calls through `ApiTraffic`: method, path, decoded query, status and body, with no unexpected extra calls.
+  - Keep the two apart, so a contract break fails the inside test while the outside test still passes.
+  - Wait with Playwright's auto-waiting and `wait_for_load_state("networkidle")`, never with sleeps.
 - Tests are deterministic, with no real network calls, sleeps or order dependence.
 - Assert through public interfaces: HTTP responses, the OpenAPI schema, the rendered DOM. Never assert on framework internals.
 - Tests start the processes they verify and never reuse an already-running server. Use `127.0.0.1`, not `localhost`, because `localhost` can resolve to `::1`.

@@ -1,6 +1,6 @@
 # Spec: Python E2E tests with whitebox verification
 
-Status: **Ready for planning**
+Status: **Done**
 
 ## Expected outcome
 
@@ -22,18 +22,18 @@ Each user journey is checked from the outside (what the user sees) and from the 
 
 ### Outside (black-box), ported from `e2e/hello.spec.ts`
 
-- [ ] Given the app is running, when the page loads, then the heading reads "Hello, World!"
-- [ ] Given `/api/hello` returns 500, when the page loads, then an alert reads "Could not load greeting"
-- [ ] Given the page has loaded, when the user enters "Ada" and clicks Greet, then the heading reads "Hello, Ada!"
-- [ ] Given the page has loaded, when the user submits `<script>alert(1)</script>`, then an alert reads "Please enter a valid name", `main` contains no `script` element, and no dialog opens
+- [x] Given the app is running, when the page loads, then the heading reads "Hello, World!"
+- [x] Given `/api/hello` returns 500, when the page loads, then an alert reads "Could not load greeting"
+- [x] Given the page has loaded, when the user enters "Ada" and clicks Greet, then the heading reads "Hello, Ada!"
+- [x] Given the page has loaded, when the user submits `<script>alert(1)</script>`, then an alert reads "Please enter a valid name", `main` contains no `script` element, and no dialog opens
 
 ### Inside (whitebox): network contract
 
-- [ ] Given the page loads, then the browser sends exactly one `GET /api/hello` with no query string, and it returns 200 `{"message": "Hello, World!"}`
-- [ ] Given the user greets "  Ada  ", then the browser sends exactly one `GET /api/hello?name=Ada` (trimmed), and it returns 200 `{"message": "Hello, Ada!"}`
-- [ ] Given the user greets "Ada Lovelace", then the `name` query parameter decodes to exactly `Ada Lovelace`, and the response message is "Hello, Ada Lovelace!"
-- [ ] Given markup is submitted, then the response is 422 `{"detail": "Invalid request"}`, and its body doesn't contain the submitted input
-- [ ] Given any journey above, then every request the page makes to `/api/` is accounted for: no unexpected extra calls, and no request to any origin other than the test servers
+- [x] Given the page loads, then the browser sends exactly one `GET /api/hello` with no query string, and it returns 200 `{"message": "Hello, World!"}`
+- [x] Given the user greets "  Ada  ", then the browser sends exactly one `GET /api/hello?name=Ada` (trimmed), and it returns 200 `{"message": "Hello, Ada!"}`
+- [x] Given the user greets "Ada Lovelace", then the `name` query parameter decodes to exactly `Ada Lovelace`, and the response message is "Hello, Ada Lovelace!"
+- [x] Given markup is submitted, then the response is 422 `{"detail": "Invalid request"}`, and its body doesn't contain the submitted input
+- [x] Given any journey above, then every request the page makes to `/api/` is accounted for: no unexpected extra calls, and no request to any origin other than the test servers
 
 ## Non-functional requirements
 
