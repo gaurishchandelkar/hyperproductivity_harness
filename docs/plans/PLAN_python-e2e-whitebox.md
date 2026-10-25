@@ -73,10 +73,10 @@ Success criteria:
 - `scripts/metrics.mjs`: count E2E tests as `def test_` in `e2e/**/*.py`.
 
 Success criteria:
-- [ ] `npm run check` passes, and the functional stage runs the 8 Python tests in under 30 s
-- [ ] `npm ls @playwright/test` shows nothing, and `git ls-files e2e` lists only Python files
-- [ ] `npm run metrics` reports 8 e2e tests
-- [ ] A deliberately failing E2E test leaves a trace and a screenshot under `test-results/`. It's reverted afterwards
+- [x] `npm run check` passes, and the functional stage runs the 8 Python tests in under 30 s
+- [x] `npm ls @playwright/test` shows nothing, and `git ls-files e2e` lists only Python files
+- [x] `npm run metrics` reports 8 e2e tests
+- [x] A deliberately failing E2E test leaves a trace and a screenshot under `test-results/`. It's reverted afterwards
 - [ ] CI's `functional` job passes on the PR, in under 90 s
 
 ## Phase 4: Docs

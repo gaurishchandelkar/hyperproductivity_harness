@@ -105,7 +105,7 @@ function main() {
   console.table({
     "python tests": countMatches("backend/tests", /^def test_/gm, (f) => f.endsWith(".py")),
     "frontend tests": countMatches("frontend/src", /^\s*it\(/gm, (f) => /\.test\.tsx?$/.test(f)),
-    "e2e tests": countMatches("e2e", /^test\(/gm, (f) => f.endsWith(".spec.ts")),
+    "e2e tests": countMatches("e2e", /^def test_/gm, (f) => f.endsWith(".py")),
     "harness tests": countMatches(".claude/hooks", /^\s*\[/gm, (f) => f.endsWith(".test.mjs")),
     skills: existsSync(".claude/skills") ? readdirSync(".claude/skills").length : 0,
     "harness log entries": signals.entries,
