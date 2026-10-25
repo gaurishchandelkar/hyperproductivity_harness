@@ -24,6 +24,7 @@ HOST = "127.0.0.1"
 API_PORT = 8100
 WEB_PORT = 5273
 STARTUP_TIMEOUT_S = 30
+BUILD_TIMEOUT_S = 120
 
 
 @dataclass
@@ -48,6 +49,9 @@ def _node() -> str:
     node = shutil.which("node")
     if node is None:
         pytest.fail("Node.js isn't on PATH. The E2E tests need it to build and serve the frontend.")
+    # Windows also searches the working directory: never run a node planted inside the repo.
+    if Path(node).resolve().is_relative_to(ROOT):
+        pytest.fail(f"Refusing to run {node}: it's inside the repo, not an installed Node.js.")
     return node
 
 
@@ -56,7 +60,7 @@ def _responds(port: int, path: str) -> bool:
     try:
         connection.request("GET", path)
         return connection.getresponse().status == 200
-    except OSError:
+    except (OSError, http.client.HTTPException):
         return False
     finally:
         connection.close()
@@ -75,13 +79,17 @@ def _port_in_use(port: int) -> bool:
 
 
 def _build_frontend(out_dir: Path) -> None:
-    result = subprocess.run(
-        [_node(), str(VITE), "build", "frontend", "--outDir", str(out_dir), "--emptyOutDir"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            [_node(), str(VITE), "build", "frontend", "--outDir", str(out_dir), "--emptyOutDir"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=BUILD_TIMEOUT_S,
+        )
+    except subprocess.TimeoutExpired:
+        pytest.fail(f"The frontend build didn't finish within {BUILD_TIMEOUT_S} s.", pytrace=False)
     if result.returncode != 0:
         pytest.fail(f"The frontend build failed:\n{result.stdout}{result.stderr}", pytrace=False)
 
@@ -100,7 +108,8 @@ def _start(name: str, argv: list[str], port: int, health_path: str, log_dir: Pat
             cwd=ROOT,
             stdout=out,
             stderr=subprocess.STDOUT,
-            env={**os.environ, "API_PORT": str(API_PORT)},
+            # Unbuffered, so the log is complete when a hung server times out.
+            env={**os.environ, "API_PORT": str(API_PORT), "PYTHONUNBUFFERED": "1"},
         )
     server = Server(name, process, log)
     deadline = time.monotonic() + STARTUP_TIMEOUT_S

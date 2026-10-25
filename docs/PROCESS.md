@@ -3,7 +3,7 @@
 ## Setup
 
 ```bash
-uv sync        # Python deps into .venv (first: npm install needs Python Playwright)
+uv sync        # Python deps into .venv (npm install needs uv, for Python Playwright)
 npm install    # Node deps, git hooks (lefthook) and the E2E Chromium
 npm run dev    # backend :8000 + frontend :5173
 npm run check  # full verification pipeline

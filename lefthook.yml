@@ -6,7 +6,7 @@ pre-commit:
   parallel: true
   jobs:
     - name: python
-      glob: "backend/**/*.py"
+      glob: ["backend/**/*.py", "e2e/**/*.py"]
       group:
         piped: true
         jobs:
@@ -18,7 +18,7 @@ pre-commit:
           - run: uv run pytest backend/tests/unit --cov
 
     - name: typescript
-      glob: ["frontend/**", "e2e/**", "scripts/**", ".claude/**", "*.config.*", "*.json"]
+      glob: ["frontend/**", "scripts/**", ".claude/**", "*.config.*", "*.json"]
       group:
         piped: true
         jobs:
