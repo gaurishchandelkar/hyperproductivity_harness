@@ -1,7 +1,7 @@
 # Plan: Python E2E tests with whitebox verification
 
 Spec: `docs/specs/python-e2e-whitebox.md`
-Status: **Done** (CI on the PR still to confirm: Phase 3, last criterion)
+Status: **Done**
 
 ## Approach
 
@@ -77,7 +77,7 @@ Success criteria:
 - [x] `npm ls @playwright/test` shows nothing, and `git ls-files e2e` lists only Python files
 - [x] `npm run metrics` reports 8 e2e tests
 - [x] A deliberately failing E2E test leaves a trace and a screenshot under `test-results/`. It's reverted afterwards
-- [ ] CI's `functional` job passes on the PR, in under 90 s
+- [x] CI's `functional` job passes on the PR, in under 90 s (49 s on PR #6)
 
 ## Phase 4: Docs
 
