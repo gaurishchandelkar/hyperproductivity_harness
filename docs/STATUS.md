@@ -21,7 +21,7 @@
 
 ## In progress
 
-- None. The Python E2E change (`docs/plans/PLAN_python-e2e-whitebox.md`) is done locally; its CI run on the PR is still to be confirmed.
+- Python E2E with whitebox network checks (`docs/plans/PLAN_python-e2e-whitebox.md`): implemented and reviewed, waiting for its CI run on the PR.
 
 ## Known gaps
 

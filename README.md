@@ -25,7 +25,7 @@ Prerequisites: [uv](https://docs.astral.sh/uv/), Node.js 22+, git. Optional: the
 # 1. Create your repo from this template (GitHub "Use this template"), clone it, then:
 node scripts/init-project.mjs --name my-app --owner your-github-handle
 
-# 2. Install everything (Python deps, Node deps, git hooks, the E2E Chromium), uv sync first
+# 2. Install everything (Python deps, Node deps, git hooks, the E2E Chromium)
 uv sync
 npm install
 

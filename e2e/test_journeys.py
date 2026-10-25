@@ -19,6 +19,7 @@ def test_shows_alert_when_backend_fails(page: Page) -> None:
 
 def test_greets_entered_name(page: Page) -> None:
     page.goto("/")
+    expect(page.get_by_role("heading", name="Hello, World!")).to_be_visible()
 
     page.get_by_label("Your name").fill("Ada")
     page.get_by_role("button", name="Greet").click()
@@ -35,6 +36,7 @@ def test_rejects_markup_without_rendering_it(page: Page) -> None:
 
     page.on("dialog", dismiss)
     page.goto("/")
+    expect(page.get_by_role("heading", name="Hello, World!")).to_be_visible()
 
     page.get_by_label("Your name").fill("<script>alert(1)</script>")
     page.get_by_role("button", name="Greet").click()

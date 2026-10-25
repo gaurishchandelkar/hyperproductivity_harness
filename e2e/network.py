@@ -4,7 +4,10 @@ import json
 from dataclasses import dataclass
 from urllib.parse import parse_qs, urlsplit
 
-from playwright.sync_api import Page, Request
+from playwright.sync_api import Error, Page, Request, Response
+
+type Signature = tuple[str, str, dict[str, list[str]]]
+"""(method, path, decoded query): what identifies an API call in an assertion."""
 
 
 def origin(url: str) -> str:
@@ -12,8 +15,8 @@ def origin(url: str) -> str:
     return f"{parts.scheme}://{parts.netloc}"
 
 
-type Signature = tuple[str, str, dict[str, list[str]]]
-"""(method, path, decoded query): what identifies an API call in an assertion."""
+def _is_api(request: Request) -> bool:
+    return urlsplit(request.url).path.startswith("/api/")
 
 
 @dataclass(frozen=True)
@@ -33,6 +36,18 @@ class Call:
         return json.loads(self.body or "null")
 
 
+def _body(request: Request, response: Response) -> str | None:
+    # Bodies only for API calls, and never for redirects, which Playwright can't read.
+    if not _is_api(request) or 300 <= response.status < 400:
+        return None
+    try:
+        return response.text()
+    except Error:
+        # Some bodies are gone by the time we read them, such as a stubbed empty 500.
+        # Record that rather than crash, so the failure message still lists every call.
+        return None
+
+
 def _call(request: Request) -> Call:
     parts = urlsplit(request.url)
     response = request.response()
@@ -42,7 +57,7 @@ def _call(request: Request) -> Call:
         path=parts.path,
         query=parse_qs(parts.query, keep_blank_values=True),
         status=response.status if response else None,
-        body=response.text() if response else None,
+        body=_body(request, response) if response else None,
     )
 
 
@@ -62,16 +77,15 @@ class ApiTraffic:
         return [_call(request) for request in self._requests]
 
     def api_calls(self) -> list[Call]:
-        return [call for call in self.calls() if call.path.startswith("/api/")]
+        """The /api/ calls made so far. Calls started after this point aren't included."""
+        return [_call(request) for request in self._requests if _is_api(request)]
 
     def foreign_origins(self, allowed: str) -> list[str]:
         return sorted({origin(r.url) for r in self._requests} - {allowed})
 
     def describe(self) -> str:
-        # Bodies only for API calls: page assets would bury them.
         seen = [
-            f"  {c.method} {c.url} -> {c.status}"
-            + (f" {c.body!r}" if c.path.startswith("/api/") else "")
+            f"  {c.method} {c.url} -> {c.status}" + (f" {c.body!r}" if c.body is not None else "")
             for c in self.calls()
         ]
         return "Requests seen:\n" + ("\n".join(seen) or "  (none)")
