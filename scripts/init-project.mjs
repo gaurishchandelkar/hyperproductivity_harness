@@ -46,5 +46,5 @@ Next:
   uv sync && npm install
   npm run check
   git add -A && git commit -m "Initialise ${name} from the hyper-harness template"
-  # create the GitHub repo, push, then (as an admin):
-  node scripts/protect-branch.mjs`);
+  # create the GitHub repo, push, wait for the first CI run, then (as an admin):
+  node scripts/protect-branch.mjs   # add --solo if you're the only maintainer`);

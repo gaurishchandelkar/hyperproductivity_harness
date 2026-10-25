@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { countSignals, isCheckboxOnly, summarise } from "./metrics.mjs";
+import { countSignals, isProgressOnly, summarise } from "./metrics.mjs";
 
 const day = (n, hour = 0) => new Date(Date.UTC(2026, 0, n, hour));
 
@@ -13,9 +13,9 @@ test("summarise computes duration, first-pass rate and rework", () => {
       planDone: day(3),
       subjects: ["greet: phase 1 - a", "greet: phase 2 - b", "greet: fix lint", "other: phase 1"],
       specEdits: [
-        { date: day(1), checkboxOnly: false },
-        { date: day(2, 12), checkboxOnly: false },
-        { date: day(3), checkboxOnly: true },
+        { date: day(1), progressOnly: false },
+        { date: day(2, 12), progressOnly: false },
+        { date: day(3), progressOnly: true },
       ],
     },
     "greet",
@@ -41,17 +41,29 @@ test("summarise reports unfinished features as in progress", () => {
   assert.equal(result["first-pass rate"], "-");
 });
 
-test("isCheckboxOnly accepts diffs that only tick boxes", () => {
+test("isProgressOnly accepts diffs that only tick boxes", () => {
   const diff = ["--- a/spec.md", "+++ b/spec.md", "-- [ ] Given A", "+- [x] Given A"].join("\n");
 
-  assert.equal(isCheckboxOnly(diff), true);
+  assert.equal(isProgressOnly(diff), true);
 });
 
-test("isCheckboxOnly rejects diffs that change wording", () => {
+// python-e2e-whitebox's "done" commit: ticks plus a Status move were reported as rework.
+test("isProgressOnly accepts a Status change alongside ticked boxes", () => {
+  const diff = [
+    "-Status: **Ready for planning**",
+    "+Status: **Done**",
+    "-- [ ] Given A",
+    "+- [x] Given A",
+  ].join("\n");
+
+  assert.equal(isProgressOnly(diff), true);
+});
+
+test("isProgressOnly rejects diffs that change wording", () => {
   const diff = ["-- [ ] Given A", "+- [x] Given B"].join("\n");
 
-  assert.equal(isCheckboxOnly(diff), false);
-  assert.equal(isCheckboxOnly("+- [ ] New criterion"), false);
+  assert.equal(isProgressOnly(diff), false);
+  assert.equal(isProgressOnly("+- [ ] New criterion"), false);
 });
 
 test("countSignals counts dated entries and escaped defects", () => {

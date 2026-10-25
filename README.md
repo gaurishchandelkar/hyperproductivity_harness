@@ -32,9 +32,13 @@ npm install
 # 3. Prove the harness works on your machine
 npm run check
 
-# 4. Commit, push, then protect main (as a repo admin)
-node scripts/protect-branch.mjs
+# 4. Commit, push, wait for the first CI run, then protect main (as a repo admin)
+node scripts/protect-branch.mjs          # team: PRs, a code owner review and all 7 CI checks
+node scripts/protect-branch.mjs --solo   # one maintainer: PRs and all 7 CI checks, no approval
 ```
+
+GitHub doesn't let you approve your own PR, so a solo maintainer needs `--solo`, or `main` can never be merged into.
+If you set up a ruleset by hand instead, add **Require status checks to pass** with the 7 CI jobs. Requiring a PR alone doesn't stop a red build from being merged.
 
 ## Daily use
 
