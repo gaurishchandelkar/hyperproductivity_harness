@@ -26,3 +26,4 @@
 
 - The branch protection script is untested until a repo admin runs it.
 - The guard hook only inspects command text heuristically. It's a seatbelt, not a sandbox, and CI is the backstop.
+  It covers the Bash and PowerShell tools. A new shell tool must be added to `SHELL_TOOLS` in `.claude/hooks/guard.mjs`, and a test checks that `.claude/settings.json` sends each one through the guard.

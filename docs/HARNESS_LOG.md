@@ -13,6 +13,12 @@ Entry format:
 - Enforced: yes (<check that now catches it>) | documented only (<why it can't be enforced>)
 ```
 
+## 2026-10-25: Guard and deny rules didn't cover the PowerShell tool
+- Signal: security issue
+- What happened: The retro on harness creation found that `.claude/settings.json` only sent `Bash|Read|Edit|Write|MultiEdit` calls through the guard hook, and its deny rules only listed `Bash(...)` patterns. On Windows, Claude Code also has a PowerShell tool, so `git push`, `--no-verify` or reading `.env` through PowerShell bypassed every agent safeguard. No bypass happened; the gap was in the config.
+- Improvement: safeguard. The hook matcher and deny rules now include PowerShell. `guard.mjs` applies its shell rules to every tool in `SHELL_TOOLS`, and also catches `$env:LEFTHOOK` and the PowerShell cmdlets that write to harness files. A test fails if any shell tool in `SHELL_TOOLS` isn't sent through the guard or lacks a push deny rule. Run against the old settings, it fails with "PowerShell is not routed through the guard".
+- Enforced: yes (guard tests in the unit stage and pre-commit; a live PowerShell call containing `git push` is now denied)
+
 ## 2026-10-25: Unit stage passed on Windows but failed on Linux CI
 - Signal: harness defect
 - What happened: The first CI run on GitHub failed the unit job. `node --test .claude/hooks/ scripts/` passed on Windows, but on Linux Node tried to load each directory as a module (`Cannot find module …/.claude/hooks`). The pre-commit hook also ran only the guard tests, never `scripts/metrics.test.mjs`. CI also warned that `checkout@v4`, `setup-node@v4` and `setup-uv@v6` run on deprecated Node 20, and Dependabot opened a TypeScript 7 PR against the documented `~6.0` pin.

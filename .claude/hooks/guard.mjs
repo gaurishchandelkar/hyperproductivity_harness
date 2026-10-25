@@ -5,10 +5,16 @@ import { pathToFileURL } from "node:url";
 
 const ENV_FILE = /(?:^|[\s"'=<>/\\:])\.env(?:\.(?!example\b)[\w.-]+)?(?=$|[\s"'<>;|&)])/;
 
-const BASH_RULES = [
+// Every shell tool gets the same rules: on Windows, PowerShell is as able to push as Bash.
+export const SHELL_TOOLS = ["Bash", "PowerShell"];
+
+const SHELL_RULES = [
   [/\bgit\s+(?:-[cC]\s+\S+\s+)*push\b/, "Agents never push. Ask a human to push."],
   [/--no-verify\b|\bgit\s+commit\b.*\s-n(?:\s|$)/, "Never skip git hooks. Fix the failing check."],
-  [/\bLEFTHOOK=(?:0|false)\b|\blefthook\s+uninstall\b|core\.hooksPath/, "Never disable git hooks."],
+  [
+    /\bLEFTHOOK=(?:0|false)\b|\$env:LEFTHOOK\s*=\s*["']?(?:0|false)\b|\blefthook\s+uninstall\b|core\.hooksPath/i,
+    "Never disable git hooks.",
+  ],
   [ENV_FILE, "Never access .env files. Ask a human to set secrets."],
 ];
 
@@ -22,7 +28,7 @@ const MIN_COVERAGE = 80;
 const PROTECTED =
   /^(?:\.claude\/|\.github\/|lefthook\.yml$|eslint\.config\.js$|\.secrets\.baseline$|AGENTS\.md$|CLAUDE\.md$|docs\/(?:RULES|SECURITY_GUIDELINES)\.md$)/;
 const PROTECTED_IN_SHELL =
-  /(?:>|\btee\b|\bsed\s+-i\b|\bmv\b|\bcp\b|\brm\b)[^|;&]*(?:\.claude[/\\]|\.github[/\\]|lefthook\.yml|eslint\.config\.js|\.secrets\.baseline)/;
+  /(?:>|\btee\b|\bsed\s+-i\b|\bmv\b|\bcp\b|\brm\b|\b(?:Set|Add|Clear)-Content\b|\bOut-File\b|\b(?:Copy|Move|Remove|New|Rename)-Item\b)[^|;&]*(?:\.claude[/\\]|\.github[/\\]|lefthook\.yml|eslint\.config\.js|\.secrets\.baseline)/i;
 
 function relative(filePath, projectDir) {
   return path.relative(projectDir, path.resolve(projectDir, filePath)).split(path.sep).join("/");
@@ -36,9 +42,9 @@ function newContent(toolName, input) {
 }
 
 export function evaluate({ tool_name: toolName, tool_input: input = {} }, projectDir) {
-  if (toolName === "Bash") {
+  if (SHELL_TOOLS.includes(toolName)) {
     const command = input.command ?? "";
-    for (const [pattern, reason] of BASH_RULES) {
+    for (const [pattern, reason] of SHELL_RULES) {
       if (pattern.test(command)) return { decision: "deny", reason };
     }
     if (PROTECTED_IN_SHELL.test(command)) {

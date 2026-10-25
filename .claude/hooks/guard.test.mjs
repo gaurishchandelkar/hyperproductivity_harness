@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-import { evaluate } from "./guard.mjs";
+import { evaluate, SHELL_TOOLS } from "./guard.mjs";
 
 const P = process.cwd();
 
@@ -20,6 +21,16 @@ const cases = [
   ["Bash", { command: "node -e 'console.log(process.env.HOME)'" }, null],
   ["Bash", { command: "echo x > .claude/settings.json" }, "ask"],
   ["Bash", { command: "npm run check" }, null],
+  ["PowerShell", { command: "git push origin main" }, "deny"],
+  ["PowerShell", { command: 'git commit -m "x" --no-verify' }, "deny"],
+  ["PowerShell", { command: "$env:LEFTHOOK = '0'; git commit -m x" }, "deny"],
+  ["PowerShell", { command: "Get-Content .env" }, "deny"],
+  ["PowerShell", { command: 'Get-Content -Path ".env.local"' }, "deny"],
+  ["PowerShell", { command: "Get-Content .env.example" }, null],
+  ["PowerShell", { command: "Write-Output $env:PATH" }, null],
+  ["PowerShell", { command: "Set-Content .claude/settings.json '{}'" }, "ask"],
+  ["PowerShell", { command: "Remove-Item .github\\workflows\\ci.yml" }, "ask"],
+  ["PowerShell", { command: "git status; npm run check" }, null],
   ["Read", { file_path: `${P}/.env` }, "deny"],
   ["Read", { file_path: `${P}/.env.example` }, null],
   ["Write", { file_path: `${P}/backend/x.py`, content: "x = 1  # noqa" }, "deny"],
@@ -49,3 +60,15 @@ for (const [toolName, toolInput, expected] of cases) {
     assert.equal(result?.decision ?? null, expected);
   });
 }
+
+// The guard only sees tools the hook matcher routes to it. A shell tool missing there bypasses every rule.
+test("settings route every shell tool through the guard and deny push for each", () => {
+  const settings = JSON.parse(readFileSync(".claude/settings.json", "utf8"));
+  const matchers = settings.hooks.PreToolUse.map((entry) => entry.matcher.split("|"));
+  const guarded = matchers.find((names) => names.includes("Read")) ?? [];
+
+  for (const tool of SHELL_TOOLS) {
+    assert.ok(guarded.includes(tool), `${tool} is not routed through the guard`);
+    assert.ok(settings.permissions.deny.includes(`${tool}(git push *)`), `${tool} can push`);
+  }
+});
