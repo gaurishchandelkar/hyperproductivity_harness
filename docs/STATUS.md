@@ -20,7 +20,7 @@
 
 ## In progress
 
-- Python E2E with whitebox network checks (`docs/plans/PLAN_python-e2e-whitebox.md`). Phases 1–2 are done: the server fixture, the outside journeys and the network-contract checks in `e2e/`. The TypeScript suite still runs the functional stage until Phase 3.
+- Python E2E with whitebox network checks (`docs/plans/PLAN_python-e2e-whitebox.md`). Phases 1–3 are done: the functional stage runs the Python suite in `e2e/`, and the TypeScript suite is gone. Docs are next.
 
 ## Known gaps
 

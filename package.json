@@ -19,7 +19,7 @@
     "lint:ts": "prettier --check -u . && eslint .",
     "test:unit": "uv run pytest backend/tests/unit --cov && vitest run --root frontend --coverage && node --test \".claude/hooks/*.test.mjs\" \"scripts/*.test.mjs\"",
     "test:integration": "uv run pytest backend/tests/integration",
-    "test:e2e": "playwright test",
+    "test:e2e": "uv run pytest e2e --browser chromium --tracing retain-on-failure --screenshot only-on-failure --output test-results",
     "security": "uv run pip-audit && npm audit --audit-level=high && node scripts/check-secrets.mjs",
     "architecture": "uv run lint-imports",
     "metrics": "node scripts/metrics.mjs"
@@ -31,7 +31,6 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@playwright/mcp": "^0.0.83",
-    "@playwright/test": "^1.64.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.8",

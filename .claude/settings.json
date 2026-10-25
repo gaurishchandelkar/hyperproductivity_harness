@@ -8,7 +8,6 @@
       "Bash(uv run pytest *)",
       "Bash(uv run ruff *)",
       "Bash(uv run lint-imports)",
-      "Bash(npx playwright test *)",
       "Bash(npx vitest *)",
       "Bash(git status)",
       "Bash(git diff *)",

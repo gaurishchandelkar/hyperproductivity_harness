@@ -16,5 +16,5 @@
     "noEmit": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["frontend", "e2e", "*.config.ts"]
+  "include": ["frontend"]
 }
