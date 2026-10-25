@@ -16,6 +16,7 @@ dev = [
     "pip-audit>=2.10.1",
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
+    "pytest-playwright>=0.10.0",
     "ruff>=0.17.2",
 ]
 
@@ -31,9 +32,13 @@ select = ["E", "W", "F", "I", "B", "UP", "S", "SIM", "N", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
 "backend/tests/**" = ["S101"]
+"e2e/**" = ["S101"]
+# Human-approved (docs/plans/PLAN_python-e2e-whitebox.md): the E2E fixture starts the servers it
+# tests. Its argv is fixed: constants, sys.executable and shutil.which("node"). No shell, no input.
+"e2e/conftest.py" = ["S603"]
 
 [tool.pyright]
-include = ["backend"]
+include = ["backend", "e2e"]
 typeCheckingMode = "strict"
 venvPath = "."
 venv = ".venv"
