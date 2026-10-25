@@ -43,6 +43,23 @@ const cases = [
   ["Edit", { file_path: `${P}/docs/CODING_GUIDELINES.md`, new_string: "never `# noqa`" }, null],
   ["Edit", { file_path: `${P}/pyproject.toml`, new_string: "fail_under = 50" }, "deny"],
   ["Edit", { file_path: `${P}/pyproject.toml`, new_string: "fail_under = 85" }, null],
+  ["Edit", { file_path: `${P}/pyproject.toml`, new_string: '"e2e/conftest.py" = ["S603"]' }, "ask"],
+  [
+    "Edit",
+    { file_path: `${P}/pyproject.toml`, new_string: "[tool.ruff.lint.per-file-ignores]" },
+    "ask",
+  ],
+  ["Edit", { file_path: `${P}/pyproject.toml`, new_string: 'extend-exclude = ["x"]' }, "ask"],
+  ["Edit", { file_path: `${P}/pyproject.toml`, new_string: 'ignore = ["E501"]' }, "ask"],
+  [
+    "Edit",
+    { file_path: `${P}/pyproject.toml`, new_string: "reportUnknownMemberType = false" },
+    "ask",
+  ],
+  ["Edit", { file_path: `${P}/pyproject.toml`, new_string: 'typeCheckingMode = "basic"' }, "ask"],
+  ["Edit", { file_path: `${P}/pyproject.toml`, new_string: 'include = ["backend", "e2e"]' }, null],
+  ["Edit", { file_path: `${P}/pyproject.toml`, new_string: '    "fastapi>=0.162.0",' }, null],
+  ["Edit", { file_path: `${P}/backend/x.toml`, new_string: 'ignore = ["E501"]' }, null],
   [
     "Edit",
     { file_path: `${P}/frontend/vite.config.ts`, new_string: "thresholds: { lines: 60 }" },

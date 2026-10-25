@@ -25,6 +25,10 @@ const THRESHOLD = /(?:fail[_-]under|"?(?:lines|branches|functions|statements)"?)
 const THRESHOLD_FILES = /^(?:pyproject\.toml|package\.json|frontend\/vite\.config\.ts)$/;
 const MIN_COVERAGE = 80;
 
+// Rule exclusions and weaker type checking disable safeguards: a human decides.
+const RULE_EXCLUSION =
+  /per-file-ignores|^\s*(?:extend-)?(?:ignore|exclude|extend-exclude)\s*=|^\s*"[^"]+"\s*=\s*\[\s*"[A-Z]+\d*"|typeCheckingMode|^\s*report\w+\s*=\s*(?:false|"none")/m;
+
 const PROTECTED =
   /^(?:\.claude\/|\.github\/|lefthook\.yml$|eslint\.config\.js$|\.secrets\.baseline$|AGENTS\.md$|CLAUDE\.md$|docs\/(?:RULES|SECURITY_GUIDELINES)\.md$)/;
 const PROTECTED_IN_SHELL =
@@ -74,6 +78,9 @@ export function evaluate({ tool_name: toolName, tool_input: input = {} }, projec
         return { decision: "deny", reason: `Coverage thresholds must stay >= ${MIN_COVERAGE}%.` };
       }
     }
+  }
+  if (file === "pyproject.toml" && RULE_EXCLUSION.test(content)) {
+    return { decision: "ask", reason: "Rule exclusions need human approval (docs/RULES.md)." };
   }
   if (PROTECTED.test(file)) {
     return {

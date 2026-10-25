@@ -22,8 +22,13 @@ Entry format:
 ## 2026-10-25: Rule exclusions in pyproject.toml aren't guarded
 - Signal: security issue
 - What happened: Implementing python-e2e-whitebox needed a ruff per-file ignore for S603. The guard correctly blocked the `# noqa` comments, and the human approved the ignore. But the guard never asked about the `pyproject.toml` edit that added it: `pyproject.toml` isn't a protected file, and the guard only checks its coverage thresholds. An agent could disable any ruff rule there without a prompt. Both reviewers flagged it.
-- Improvement: safeguard (drafted, awaiting human approval). The guard asks before an edit to `pyproject.toml` or `eslint.config.js` adds `ignore`, `extend-ignore`, `per-file-ignores` or `exclude`, with tests.
-- Enforced: not yet (`.claude/hooks/` is protected and needs human approval)
+- Improvement: safeguard (approved by the human). The guard asks before an edit to `pyproject.toml` adds any of these:
+  - `per-file-ignores` or a per-file rule list
+  - `ignore`, `extend-ignore`, `exclude` or `extend-exclude`
+  - a pyright `report*` turned off, or a `typeCheckingMode` change
+
+  `eslint.config.js` was already protected. Run against the previous guard, the 6 new "ask" cases fail, and the 3 harmless edits pass either way.
+- Enforced: yes (guard tests in the unit stage and pre-commit)
 
 ## 2026-10-25: Pre-commit didn't lint the new E2E Python
 - Signal: harness defect
