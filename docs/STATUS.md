@@ -24,5 +24,5 @@
 
 ## Known gaps
 
-- The CI workflow and branch protection script are untested until the repo is pushed to GitHub.
+- The branch protection script is untested until a repo admin runs it.
 - The guard hook only inspects command text heuristically. It's a seatbelt, not a sandbox, and CI is the backstop.

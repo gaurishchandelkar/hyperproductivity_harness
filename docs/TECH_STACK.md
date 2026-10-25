@@ -18,6 +18,6 @@ The root `package.json` runs all tasks, and Python commands go through `uv run`.
 
 | What | Why |
 |---|---|
-| TypeScript `~6.0` | typescript-eslint supports only `<6.1` so far. Lift the pin when it supports TypeScript 7 |
+| TypeScript `~6.0` | typescript-eslint supports only `<6.1` so far. Lift the pin, and the TypeScript ignore in `.github/dependabot.yml`, when it supports TypeScript 7 |
 | No `eslint-plugin-react` | It doesn't support ESLint 10 yet. `dangerouslySetInnerHTML` is blocked with `no-restricted-syntax` instead |
 | `httpx2` (test only) | Starlette's `TestClient` deprecated `httpx` in favor of `httpx2` |

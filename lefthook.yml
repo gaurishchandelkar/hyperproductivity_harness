@@ -30,8 +30,8 @@ pre-commit:
           - run: npx vitest run --root frontend --coverage
 
     - name: hooks
-      glob: ".claude/hooks/**"
-      run: node --test .claude/hooks/
+      glob: [".claude/hooks/**", "scripts/**"]
+      run: node --test ".claude/hooks/*.test.mjs" "scripts/*.test.mjs"
 
     - name: secrets
       run: node scripts/check-secrets.mjs {staged_files}
