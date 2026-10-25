@@ -13,6 +13,59 @@ Entry format:
 - Enforced: yes (<check that now catches it>) | documented only (<why it can't be enforced>)
 ```
 
+## 2026-10-25: Branch protection locked out a solo maintainer
+- Signal: harness defect
+- What happened: PR #6 (python-e2e-whitebox) couldn't be merged. The human's ruleset required 1 approval, and GitHub doesn't let you approve your own PR. `scripts/protect-branch.mjs` would have done the same: it required a code owner review and applied it to admins too. The human set approvals to 0, but the ruleset still had no required status checks, so a red PR could have been merged.
+- Improvement: test. `protect-branch.mjs --solo` still requires PRs and all 7 CI checks, but no approval. Its rules come from an exported `protection()`, which `scripts/protect-branch.test.mjs` tests, along with a check that the required checks match the CI job names. The README and `init-project.mjs` explain when to use `--solo`, and that a hand-made ruleset needs required status checks.
+- Enforced: yes (the unit stage tests both modes and the check names)
+
+## 2026-10-25: Rule exclusions in pyproject.toml aren't guarded
+- Signal: security issue
+- What happened: Implementing python-e2e-whitebox needed a ruff per-file ignore for S603. The guard correctly blocked the `# noqa` comments, and the human approved the ignore. But the guard never asked about the `pyproject.toml` edit that added it: `pyproject.toml` isn't a protected file, and the guard only checks its coverage thresholds. An agent could disable any ruff rule there without a prompt. Both reviewers flagged it.
+- Improvement: safeguard (drafted, awaiting human approval). The guard asks before an edit to `pyproject.toml` or `eslint.config.js` adds `ignore`, `extend-ignore`, `per-file-ignores` or `exclude`, with tests.
+- Enforced: not yet (`.claude/hooks/` is protected and needs human approval)
+
+## 2026-10-25: Pre-commit didn't lint the new E2E Python
+- Signal: harness defect
+- What happened: python-e2e-whitebox added `e2e/` to pyright's `include`, but lefthook's `python` job still matched only `backend/**/*.py`. So ruff and pyright never ran on `e2e/*.py` at commit time, and only CI would catch them. The code reviewer found it, and it was fixed in the PR.
+- Improvement: test. `scripts/harness-config.test.mjs` fails if any folder pyright checks is missing from lefthook's `python` glob. Run against the feature's Phase 1 files, it fails with "Add these to lefthook.yml's python glob: e2e".
+- Enforced: yes (the unit stage)
+
+## 2026-10-25: networkidle gave misleading "no extra calls" evidence
+- Signal: harness defect
+- What happened: The first inside tests waited with `wait_for_load_state("networkidle")`, which settles once per navigation. The code reviewer's probe showed that a call made after a click arrived after the assertion, so "no unexpected extra calls" held only by timing. It was fixed in the PR: tests now wait for the expected response with `page.expect_response`.
+- Improvement: test. `scripts/harness-config.test.mjs` fails if an `e2e/test_*.py` file uses `networkidle`, `wait_for_timeout` or `time.sleep`. Run against the Phase 2 tests, it lists both `networkidle` lines. The rule is in `docs/CODING_GUIDELINES.md`.
+- Enforced: yes (the unit stage)
+
+## 2026-10-25: Traffic recorder crashed on redirects and unreadable bodies
+- Signal: harness defect
+- What happened: `e2e/network.py` read every response body. A redirect (the reviewer's trailing-slash probe) or a body Playwright had already dropped (a stubbed 500) raised an exception. So the test crashed instead of listing the calls it saw, which broke a spec failure condition. It was fixed in the PR: bodies are read only for API calls that aren't redirects, and unreadable bodies are recorded as unavailable.
+- Improvement: test (partial). `test_backend_failure_requests_greeting_once` exercises the unreadable-body path in every run. The redirect path was checked with a scratch probe, recorded in PR #6.
+- Enforced: partly (the redirect case has no committed test: a redirecting route sends the browser to the backend's own port, which the foreign-origin check rightly fails)
+
+## 2026-10-25: Outside tests acted before the initial load settled
+- Signal: repeated review feedback
+- What happened: Two outside journeys filled the name field before the default greeting had loaded. If the initial response arrived last, it could overwrite the greeting or the alert, and the test would flake. The TypeScript suite had the same race, so it was carried over. It was fixed in the PR.
+- Improvement: guideline. `docs/CODING_GUIDELINES.md` says to wait for the page's initial state before interacting.
+- Enforced: documented only (can't tell from the source alone whether a test waited for the right state; review checks it)
+
+## 2026-10-25: Metrics counted the Status move at done as spec rework
+- Signal: harness defect
+- What happened: `npm run metrics` reported spec rework 1 for python-e2e-whitebox. The only spec change after approval was ticking the acceptance criteria and moving `Status:` to **Done** in the same commit, and the checkbox-only rule didn't allow the Status line.
+- Improvement: test. `isProgressOnly` (renamed from `isCheckboxOnly`) ignores `Status:` lines too, covered by a test built from that commit's diff. The feature now reports 0.
+- Enforced: yes (the metrics tests in the unit stage)
+
+## 2026-10-25: Negative proofs gave the strongest evidence
+- Signal: successful pattern
+- What happened: The most convincing checks in this feature broke something on purpose:
+  - With the greeting fetched twice, all 5 inside tests failed and all 4 outside tests passed.
+  - Running the PowerShell guard test against the old settings made it fail.
+  - Requests to a foreign origin and a busy port were each shown to fail the session.
+
+  Each one showed that a check catches the problem it's meant to catch, not just that it passes.
+- Improvement: template. `docs/templates/PLAN_TEMPLATE.md` asks for a negative proof as a success criterion for any new check or safeguard.
+- Enforced: documented only (a plan reviewer checks for it)
+
 ## 2026-10-25: Guard and deny rules didn't cover the PowerShell tool
 - Signal: security issue
 - What happened: The retro on harness creation found that `.claude/settings.json` only sent `Bash|Read|Edit|Write|MultiEdit` calls through the guard hook, and its deny rules only listed `Bash(...)` patterns. On Windows, Claude Code also has a PowerShell tool, so `git push`, `--no-verify` or reading `.env` through PowerShell bypassed every agent safeguard. No bypass happened; the gap was in the config.

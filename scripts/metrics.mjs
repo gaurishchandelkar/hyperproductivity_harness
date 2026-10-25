@@ -28,15 +28,19 @@ export function summarise({ specAdded, planApproved, planDone, subjects, specEdi
     "first-pass rate":
       phases > 0 ? `${String(Math.round((100 * Math.max(phases - fixes, 0)) / phases))}%` : "-",
     "spec rework": planApproved
-      ? specEdits.filter((edit) => edit.date > planApproved && !edit.checkboxOnly).length
+      ? specEdits.filter((edit) => edit.date > planApproved && !edit.progressOnly).length
       : 0,
   };
 }
 
-// Ticking acceptance criteria at "done" is progress, not rework.
-export function isCheckboxOnly(diff) {
+// Ticking acceptance criteria and moving the Status line at "done" are progress, not rework.
+export function isProgressOnly(diff) {
   const changed = diff.split("\n").filter((line) => /^[+-](?![+-]{2})/.test(line));
-  const normalise = (line) => line.slice(1).replace(/^(\s*- )\[[ xX]\]/, "$1[ ]");
+  const normalise = (line) =>
+    line
+      .slice(1)
+      .replace(/^(\s*- )\[[ xX]\]/, "$1[ ]")
+      .replace(/^Status: .*/, "Status:");
   const removed = changed
     .filter((line) => line.startsWith("-"))
     .map(normalise)
@@ -73,7 +77,7 @@ function specEdits(spec) {
     const [sha, date] = line.split(" ");
     return {
       date: new Date(date),
-      checkboxOnly: isCheckboxOnly(git("show", "--format=", "--unified=0", sha, "--", spec)),
+      progressOnly: isProgressOnly(git("show", "--format=", "--unified=0", sha, "--", spec)),
     };
   });
 }

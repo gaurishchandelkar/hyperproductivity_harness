@@ -17,6 +17,7 @@ Decisions, risks or assumptions a reviewer should look at. Write "None" if there
 
 Success criteria:
 - [ ] <test, command output, API response or browser check>
+- [ ] <for a new check or safeguard: a negative proof. Temporarily break the code, or run the check against the old version, and show the check fails while nearby checks still pass. Then revert>
 
 ## Phase 2: <name>
 
