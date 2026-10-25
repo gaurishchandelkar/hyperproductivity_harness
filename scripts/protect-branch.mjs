@@ -49,7 +49,8 @@ function main() {
     ["api", "-X", "PUT", `repos/${repo}/branches/${branch}/protection`, "--input", "-"],
     {
       input: JSON.stringify(protection({ solo: values.solo })),
-      stdio: ["pipe", "inherit", "inherit"],
+      // Drop gh's echo of the full protection JSON; keep stderr for GitHub's error messages.
+      stdio: ["pipe", "ignore", "inherit"],
     },
   );
   const reviews = values.solo ? "no approval (solo)" : "code owner review";
