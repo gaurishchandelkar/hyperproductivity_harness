@@ -1,7 +1,7 @@
 # Plan: Python E2E tests with whitebox verification
 
 Spec: `docs/specs/python-e2e-whitebox.md`
-Status: **Awaiting approval** <!-- Awaiting approval | Approved | In progress | Done -->
+Status: **Approved** (by the human, 2026-10-25)
 
 ## Approach
 
