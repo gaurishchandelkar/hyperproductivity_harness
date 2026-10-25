@@ -21,7 +21,7 @@
 
 ## In progress
 
-- Python E2E with whitebox network checks (`docs/plans/PLAN_python-e2e-whitebox.md`): implemented and reviewed, waiting for its CI run on the PR.
+- None.
 
 ## Known gaps
 
