@@ -1,7 +1,7 @@
 # Plan: Python E2E tests with whitebox verification
 
 Spec: `docs/specs/python-e2e-whitebox.md`
-Status: **Approved** (by the human, 2026-10-25)
+Status: **In progress**
 
 ## Approach
 
@@ -15,7 +15,8 @@ The production build also matters for correctness. `main.tsx` uses `StrictMode`,
 
 ## Human attention needed
 
-- **New dependency (approved):** `pytest-playwright` as a dev dependency, which brings in `playwright` and `pytest-base-url`. Python Playwright downloads its own Chromium (about 150 MB), installed by `scripts/prepare.mjs` and in CI with `uv run playwright install`.
+- **New dependency (approved):** `pytest-playwright` as a dev dependency, which brings in `playwright`. Version 0.10 provides its own `base_url` fixture, so `pytest-base-url` isn't needed.
+- **Rule exclusion (approved during Phase 1):** ruff's bandit rule S603 flags every subprocess call. The human approved a per-file ignore for `e2e/conftest.py` only, which starts the servers under test with a fixed argv. S603 stays on everywhere else. Python Playwright downloads its own Chromium (about 150 MB), installed by `scripts/prepare.mjs` and in CI with `uv run playwright install`.
 - **Install order:** `scripts/prepare.mjs` will call `uv run playwright install chromium`, so `npm install` needs `uv sync` to have run first. That's already the documented order (`uv sync && npm install`), but a plain `npm install` on a fresh clone without it would fail at `prepare`.
 - **Protected files, for your review in the PR:**
   - `.github/workflows/ci.yml`: the functional job installs Chromium with `uv run playwright install --with-deps chromium`. Job and check names are unchanged.
@@ -28,7 +29,7 @@ The production build also matters for correctness. `main.tsx` uses `StrictMode`,
 ## Phase 1: Python E2E servers and outside journeys
 
 - Add `pytest-playwright` with `uv add --dev`.
-- `pyproject.toml`: add `e2e` to the pyright `include`, and add an `e2e/**` ruff per-file ignore for `S101` (asserts), matching `backend/tests/**`.
+- `pyproject.toml`: add `e2e` to the pyright `include`, and add an `e2e/**` ruff per-file ignore for `S101` (asserts), matching `backend/tests/**`. Also ignore `S603` for `e2e/conftest.py` only, as approved.
 - Add `e2e/conftest.py`:
   - a session fixture that builds into `tmp_path_factory` with `vite build frontend --outDir <tmp> --emptyOutDir`, then starts uvicorn and `vite preview --outDir <tmp> --strictPort`
   - a busy-port check before startup, and health polling with a 30 s limit that shows the server's output on failure
@@ -37,12 +38,12 @@ The production build also matters for correctness. `main.tsx` uses `StrictMode`,
 - The TypeScript suite stays the `functional` stage until Phase 3, so the checks stay green.
 
 Success criteria:
-- [ ] `uv run pytest e2e` reports 4 passed
-- [ ] With something listening on `127.0.0.1:8100`, the session errors naming port 8100, and no test runs against the foreign server
-- [ ] With a broken uvicorn target, the session fails naming the backend and showing its output, well before the 30 s limit (the process exits)
-- [ ] With `PLAYWRIGHT_BROWSERS_PATH` set to an empty folder, the run fails with Playwright's message naming `playwright install`
-- [ ] A temporary scratch test that kills the preview server makes the next test fail with "frontend server is not running". The scratch test isn't committed
-- [ ] `npm run check` passes
+- [x] `uv run pytest e2e` reports 4 passed
+- [x] With something listening on `127.0.0.1:8100`, the session errors naming port 8100, and no test runs against the foreign server
+- [x] With a broken uvicorn target, the session fails naming the backend and showing its output, well before the 30 s limit (the process exits)
+- [x] With `PLAYWRIGHT_BROWSERS_PATH` set to an empty folder, the run fails with Playwright's message naming `playwright install`
+- [x] A temporary scratch test that kills the preview server makes the next test fail with "frontend server is not running". The scratch test isn't committed
+- [x] `npm run check` passes
 
 ## Phase 2: Network contract (whitebox)
 
